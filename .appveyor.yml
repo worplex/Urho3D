@@ -50,8 +50,9 @@ environment:
 # We cannot afford to have a large matrix on AppVeyor at the moment
   URHO3D_D3D11: 1
   matrix:
-    - URHO3D_LIB_TYPE: STATIC
+    # Intentionally switch the order between VS and MinGW CI so that build cache fits on the size quota
     - URHO3D_LIB_TYPE: SHARED
+    - URHO3D_LIB_TYPE: STATIC
 install:
   - rake ci_timer
   - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { $env:RELEASE_TAG = $env:APPVEYOR_REPO_TAG_NAME };
