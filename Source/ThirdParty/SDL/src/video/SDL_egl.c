@@ -253,6 +253,8 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
     LOAD_FUNC(eglCreateContext);
     LOAD_FUNC(eglDestroyContext);
     LOAD_FUNC(eglCreateWindowSurface);
+    LOAD_FUNC(eglGetCurrentSurface);
+    LOAD_FUNC(eglGetCurrentContext);
     LOAD_FUNC(eglDestroySurface);
     LOAD_FUNC(eglMakeCurrent);
     LOAD_FUNC(eglSwapBuffers);
@@ -488,6 +490,10 @@ SDL_EGL_CreateContext(_THIS, EGLSurface egl_surface)
         _this->egl_data->eglBindAPI(EGL_OPENGL_API);
     }
 
+    EGLContext c_context = _this->egl_data->eglGetCurrentContext();
+    if(c_context) {
+      return c_context;
+    }
     egl_context = _this->egl_data->eglCreateContext(_this->egl_data->egl_display,
                                       _this->egl_data->egl_config,
                                       share_context, attribs);
@@ -564,6 +570,8 @@ SDL_EGL_GetSwapInterval(_THIS)
 void
 SDL_EGL_SwapBuffers(_THIS, EGLSurface egl_surface)
 {
+  //GVR: Not supported on this platform.
+  abort();
     _this->egl_data->eglSwapBuffers(_this->egl_data->egl_display, egl_surface);
 }
 
@@ -587,6 +595,11 @@ SDL_EGL_DeleteContext(_THIS, SDL_GLContext context)
 EGLSurface *
 SDL_EGL_CreateSurface(_THIS, NativeWindowType nw) 
 {
+  //GVR -- Platform handles context creation/initialization
+  EGLSurface* r = _this->egl_data->eglGetCurrentSurface(EGL_DRAW);
+  if(r) {
+    return r;
+  }
     if (SDL_EGL_ChooseConfig(_this) != 0) {
         return EGL_NO_SURFACE;
     }
@@ -609,6 +622,8 @@ SDL_EGL_CreateSurface(_THIS, NativeWindowType nw)
             _this->egl_data->egl_display,
             _this->egl_data->egl_config,
             nw, NULL);
+    
+    
 }
 
 void

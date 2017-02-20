@@ -287,7 +287,6 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     bool tripleBuffer, int multiSample)
 {
     URHO3D_PROFILE(SetScreenMode);
-
     bool maximize = false;
 
 #if defined(IOS) || defined(TVOS)
@@ -504,8 +503,9 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     ResetRenderTargets();
 
     // Clear the initial window contents to black
-    Clear(CLEAR_COLOR);
-    SDL_GL_SwapWindow(window_);
+    //GVR: Swapping is not supported in this mode (handled by GVR driver)
+    //Clear(CLEAR_COLOR);
+    //SDL_GL_SwapWindow(window_);
 
     CheckFeatureSupport();
 
@@ -623,8 +623,14 @@ bool Graphics::BeginFrame()
     if (externalWindow_)
     {
         int width, height;
-
-        SDL_GL_GetDrawableSize(window_, &width, &height);
+	//GVR: Drawable size is already set in OpenGL viewport
+	GLint params[4];
+	glGetIntegerv(GL_VIEWPORT,params);
+	width = params[2];
+	height = params[3];
+	if(!(width && height)) {
+	  abort();
+	}
         if (width != width_ || height != height_)
             SetMode(width, height);
     }
@@ -661,7 +667,8 @@ void Graphics::EndFrame()
 
     SendEvent(E_ENDRENDERING);
 
-    SDL_GL_SwapWindow(window_);
+    //Don't swap buffers for GVR
+   // SDL_GL_SwapWindow(window_);
 
     // Clean up too large scratch buffers
     CleanupScratchBuffers();

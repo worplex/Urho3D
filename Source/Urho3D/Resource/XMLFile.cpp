@@ -88,9 +88,9 @@ bool XMLFile::BeginLoad(Deserializer& source)
     }
 
     SharedArrayPtr<char> buffer(new char[dataSize]);
+
     if (source.Read(buffer.Get(), dataSize) != dataSize)
         return false;
-
     if (!document_->load_buffer(buffer.Get(), dataSize))
     {
         URHO3D_LOGERROR("Could not parse XML data from " + source.GetName());

@@ -377,7 +377,7 @@ bool Engine::Initialize(const VariantMap& parameters)
             GetParameter(parameters, EP_TRIPLE_BUFFER, false).GetBool(),
             GetParameter(parameters, EP_MULTI_SAMPLE, 1).GetInt()
         ))
-            return false;
+            //return false; //For GVR; we must use existing context. Note that this creates a hard fork of Urho3D; as it breaks compatibility with other non-VR platforms. Unfortunately; there's no better way to do this.
 
         graphics->SetShaderCacheDir(GetParameter(parameters, EP_SHADER_CACHE_DIR, fileSystem->GetAppPreferencesDir("urho3d", "shadercache")).GetString());
 

@@ -59,6 +59,8 @@ typedef struct SDL_EGL_VideoData
                                          EGLConfig config,
                                          NativeWindowType window,
                                          const EGLint * attrib_list);
+    EGLSurface(EGLAPIENTRY *eglGetCurrentSurface) (EGLint readdraw);
+    EGLContext(EGLAPIENTRY *eglGetCurrentContext) ();
     EGLBoolean(EGLAPIENTRY *eglDestroySurface) (EGLDisplay dpy, EGLSurface surface);
     
     EGLBoolean(EGLAPIENTRY *eglMakeCurrent) (EGLDisplay dpy, EGLSurface draw,
